@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Connector (AIDL api, Wifi/WifiDirect)</string>
+    <string name="setup_net">Setup Network</string>
+    <string name="search_connect">Search, Connect Peers</string>
+    <string name="stop_search">Stop searching</string>
+    <string name="conn_peers">Connected Peers:</string>
+    <string name="on_net">You are attached to: </string>
+    <string name="miss_net">Please set up Wifi/WifiDirect</string>
+    <string name="done_return">Shutdown Router and Finish</string>
+    
+</resources>

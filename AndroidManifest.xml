@@ -8,33 +8,6 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="19" />
 
-	<!-- 
-	copy RouterService's permission here 
-	so other app can invoke RouterService embedded inside this app
-	-->
-    <permission-group
-        android:name="com.xconns.peerdevicenet.permission-group.REMOTE_MESSAGING"
-        android:description="@string/permdesc_rmt_msg"
-        android:icon="@drawable/router_icon"
-        android:label="@string/rmt_msg" />
-
-    <permission
-        android:name="com.xconns.peerdevicenet.permission.REMOTE_MESSAGING"
-        android:description="@string/permdesc_rmt_msg"
-        android:icon="@drawable/router_icon"
-        android:label="@string/rmt_msg"
-        android:permissionGroup="com.xconns.peerdevicenet.permission-group.REMOTE_MESSAGING"
-        android:protectionLevel="normal" />
-
-
-    <!-- add RouterService required permissions -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.xconns.peerdevicenet.permission.REMOTE_MESSAGING" />
     
     <application
@@ -43,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
-        	<!-- the following is manifest for Connector app -->
+        <!-- the following is manifest for Connector app -->
         
         <activity
             android:name="com.xconns.peerdevicenet.samples.connector_wifi_idl.ConnectorByWifiIdl"
@@ -61,58 +34,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
-         <!-- the following are manifest for RouterService -->
-        
-        <service
-            android:name="com.xconns.peerdevicenet.core.RouterService"
-            android:enabled="true"
-            android:permission="com.xconns.peerdevicenet.permission.REMOTE_MESSAGING"
-            android:process=":RouterService" >
-            <intent-filter>
-
-                <!--
-                     This is an action code you can use to select the service
-                     without explicitly supplying the implementation class.
-                -->
-                <action android:name="com.xconns.peerdevicenet.Service" />
-                <!-- life cycle -->
-                <action android:name="com.xconns.peerdevicenet.Startup" />
-                <action android:name="com.xconns.peerdevicenet.Reset" />
-                <action android:name="com.xconns.peerdevicenet.Shutdown" />
-                <!--
-                     These are the IDL interfaces supported by the service, which
-                     you can bind to.
-                -->
-                <action android:name="com.xconns.peerdevicenet.ConnectionService" />
-                <action android:name="com.xconns.peerdevicenet.GroupService" />
-                <action android:name="com.xconns.peerdevicenet.Messenger" />
-
-                <!-- The following are intenting api -->
-
-
-                <!-- ConnectionService intent actions -->
-                <action android:name="com.xconns.peerdevicenet.GET_NETWORKS" />
-                <action android:name="com.xconns.peerdevicenet.GET_ACTIVE_NETWORK" />
-                <action android:name="com.xconns.peerdevicenet.ACTIVATE_NETWORK" />
-                <action android:name="com.xconns.peerdevicenet.START_SEARCH" />
-                <action android:name="com.xconns.peerdevicenet.STOP_SEARCH" />
-                <action android:name="com.xconns.peerdevicenet.CONNECT" />
-                <action android:name="com.xconns.peerdevicenet.DISCONNECT" />
-                <action android:name="com.xconns.peerdevicenet.ACCEPT_CONNECTION" />
-                <action android:name="com.xconns.peerdevicenet.DENY_CONNECTION" />
-                <action android:name="com.xconns.peerdevicenet.SET_CONNECTION_INFO" />
-                <action android:name="com.xconns.peerdevicenet.GET_CONNECTION_INFO" />
-                <action android:name="com.xconns.peerdevicenet.GET_DEVICE_INFO" />
-
-                <!-- GroupService intent actions -->
-                <action android:name="com.xconns.peerdevicenet.JOIN_GROUP" />
-                <action android:name="com.xconns.peerdevicenet.LEAVE_GROUP" />
-                <action android:name="com.xconns.peerdevicenet.SEND_MSG" />
-                <action android:name="com.xconns.peerdevicenet.GET_CONNECTED_PEERS" />
-            </intent-filter>
-        </service>
-        
+                
     </application>
 
 </manifest>

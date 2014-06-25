@@ -24,7 +24,6 @@ import com.xconns.peerdevicenet.DeviceInfo;
 import com.xconns.peerdevicenet.NetInfo;
 import com.xconns.peerdevicenet.Router;
 import com.xconns.peerdevicenet.RouterConnectionClient;
-import com.xconns.peerdevicenet.core.RouterService;
 
 public class ConnectorByWifiIdl extends ActionBarActivity {
 
@@ -61,7 +60,6 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 		private ArrayAdapter<String> mPeerListAdapter;
 		private ListView mPeerListView;
 
-		private HashMap<String, DeviceInfo> discoveredDevices = new HashMap<String, DeviceInfo>();
 		private DeviceInfo mDevice = null; // my own device info
 		private NetInfo mNet = null; // network my device connect to
 		// peer connection parameters
@@ -111,15 +109,14 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 			mDoneButton.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					//shutdown router by calling stopService
-					Intent intent = new Intent(activity,
-							com.xconns.peerdevicenet.core.RouterService.class);
+					Intent intent = new Intent(Router.ACTION_ROUTER_SHUTDOWN);
 					activity.stopService(intent);
 					//
 					activity.finish();
 				}
 			});
 			
-			// Initialize the array adapter for the conversation thread
+			// Initialize the array adapter for peer list
 			mPeerListAdapter = new ArrayAdapter<String>(activity, R.layout.peer_name);
 			mPeerListView = (ListView) rootView.findViewById(R.id.peers_list);
 			mPeerListView.setAdapter(mPeerListAdapter);
@@ -195,10 +192,16 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 		
 		private void addDeviceToList(DeviceInfo dev) {
 			mPeerListAdapter.add(dev.name+" : "+dev.addr);
+			mPeerListAdapter.notifyDataSetChanged();
+		}
+		
+		private void delDeviceFromList(DeviceInfo dev) {
+			mPeerListAdapter.remove(dev.name+" : "+dev.addr);
+			mPeerListAdapter.notifyDataSetChanged();
 		}
 
 		// since connHandler(aidl handler) runs in aidl threadpool, forward msg
-		// to mHandler to run
+		// to mHandler to run in main/gui thread
 		// in main thread
 		RouterConnectionClient.ConnectionHandler connHandler = new RouterConnectionClient.ConnectionHandler() {
 			public void onError(String errInfo) {
@@ -336,13 +339,7 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 					device = (DeviceInfo) params[0];
 					boolean uSSL = (Boolean) params[1];
 					Log.d(TAG, "onSearchFoundDevice: " + device);
-					if (discoveredDevices.containsKey(device.addr)) {
-						Log.d(TAG, "already discovered, drop it");
-						return;
-					}
-					discoveredDevices.put(device.addr, device);
 
-					Log.d(TAG, "---a2");
 					// after find devices
 					// auto connect to them
 					// connect from device with small ip to device with large ip
@@ -370,12 +367,16 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 					break;
 				case Router.MsgId.DISCONNECTED:
 					device = (DeviceInfo) msg.obj;
+					delDeviceFromList(device);
 					Log.d(TAG, "a device disconnected: " + device.addr);
 					break;
 				case Router.MsgId.GET_CONNECTED_PEERS:
 					DeviceInfo[] devices = (DeviceInfo[]) msg.obj;
 					if (devices == null) {
 						return;
+					}
+					for(DeviceInfo d: devices) {
+						addDeviceToList(d);
 					}
 					Log.d(TAG, "get_connected_peers: " + devices.length);
 					break;
@@ -403,14 +404,14 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 					params = (Object[]) msg.obj;
 					device = (DeviceInfo) params[0];
 					int rejectCode = ((Integer) params[1]);
-					Log.d(TAG, "connection_failed: " + device.toString());
+					Log.d(TAG, "connection_failed: " + device.toString() + ", reject code: "+rejectCode);
 					break;
 				case Router.MsgId.GET_DEVICE_INFO:
 					device = (DeviceInfo) msg.obj;
 					mDevice = device;
 					Log.d(TAG, "onGetDeviceInfo: " + device.toString());
 					// my device connect to net and got deviceinfo, 
-					//start search for peers
+					// for our simple sample, just start search&connect peers
 					Log.d(TAG, "start peer search");
 					connClient.startPeerSearch(null, searchTimeout);
 					break;
@@ -453,7 +454,7 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 					net = (NetInfo) msg.obj;
 					Log.d(TAG, "onNetworkActivated: " + net.toString());
 					mNet = net;
-					// update GUI
+					// update GUI showing net info
 					updateGuiOnNet(net);
 					// get my device info at active network
 					connClient.getDeviceInfo();

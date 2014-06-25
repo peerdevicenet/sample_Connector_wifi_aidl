@@ -40,7 +40,6 @@ It doesn't embed router directly, instead invokes an external router's APIs embe
 	* in onDestroy(), unbind from ConnectionService.
 	* Please note we call startService() explicitly to start ConnectionService and then bind to it. Without calling startService(), when connector activity finishes and unbind from ConnectionService inside onDestroy(), RouterService will be also destroyed since nobody bind to it anymore. Connectors setup router's connections so that other apps (Chat, Rotate) can communicate, so we keep router alive by startService(). Router must be explicitly killed by first unbinding all clients and call stopService() with intent ACTION_ROUTER_SHUTDOWN.
 
-
 6. Typical interaction with ConnectionService involves a oneway call to API and router call back at connHandler to reply. Typical workflow for network detection, peer search and device connection consist of the following steps:
 
 	6.1. optionally set connection parameters by calling connClient.setConnInfo(), such as the name this device will show to other peers, require SSL connection or not, etc.

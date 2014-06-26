@@ -1,7 +1,5 @@
 package com.xconns.peerdevicenet.samples.connector_wifi_idl;
 
-import java.util.HashMap;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,7 +41,7 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
-		private static final String TAG = "ByeBye";
+		private static final String TAG = "ConnectorWifiAidl";
 
 		private Activity activity = null;
 

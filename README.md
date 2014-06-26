@@ -1,7 +1,7 @@
 Connector_wifi_aidl
 ===================
 
-This sample connector using Router's ConnectionService aidl api to discover and connect to peer devices.
+This sample connector using Router's ConnectionService aidl api to discover and connect to peer devices. It communicates thru external wifi router or WifiDirect network setup among a group of WifiDirect enabled devices.
 
 It doesn't embed router directly, instead invokes an external router's APIs embedded in another app such as Connector_wifi_intent. 
 

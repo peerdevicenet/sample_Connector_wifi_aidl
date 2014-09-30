@@ -6,13 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -23,67 +19,38 @@ import com.xconns.peerdevicenet.NetInfo;
 import com.xconns.peerdevicenet.Router;
 import com.xconns.peerdevicenet.RouterConnectionClient;
 
-public class ConnectorByWifiIdl extends ActionBarActivity {
+public class ConnectorByWifiIdl extends Activity {
+	private static final String TAG = "ConnectorWifiAidl";
+
+	private TextView mNetMsg = null;
+	private Button mConnButton = null;
+	private Button mDoneButton = null;
+
+	private CharSequence setupNetText = null;
+	private CharSequence stopSearchText = null;
+	private CharSequence searchConnectText = null;
+	private CharSequence onNetText = null;
+	private CharSequence missNetText = null;
+	
+	private ArrayAdapter<String> mPeerListAdapter;
+	private ListView mPeerListView;
+
+	private DeviceInfo mDevice = null; // my own device info
+	private NetInfo mNet = null; // network my device connect to
+	// peer connection parameters
+	private String securityToken = ""; // dont check conn security token
+	private int connTimeout = 5000; // 5 seconds for socket conn timeout
+	private int searchTimeout = 30000; // 30 seconds timeout for searching
+										// peers
+
+	// interface to router connection service
+	RouterConnectionClient connClient = null;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_connector_by_wifi_idl);
-
-		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
-	}
-
-	/**
-	 * main fragment containing all GUI.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		private static final String TAG = "ConnectorWifiAidl";
-
-		private Activity activity = null;
-
-		private TextView mNetMsg = null;
-		private Button mConnButton = null;
-		private Button mDoneButton = null;
-
-		private CharSequence setupNetText = null;
-		private CharSequence stopSearchText = null;
-		private CharSequence searchConnectText = null;
-		private CharSequence onNetText = null;
-		private CharSequence missNetText = null;
-		
-		private ArrayAdapter<String> mPeerListAdapter;
-		private ListView mPeerListView;
-
-		private DeviceInfo mDevice = null; // my own device info
-		private NetInfo mNet = null; // network my device connect to
-		// peer connection parameters
-		private String securityToken = ""; // dont check conn security token
-		private int connTimeout = 5000; // 5 seconds for socket conn timeout
-		private int searchTimeout = 30000; // 30 seconds timeout for searching
-											// peers
-
-		// interface to router connection service
-		RouterConnectionClient connClient = null;
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public void onAttach(Activity act) {
-			// TODO Auto-generated method stub
-			super.onAttach(activity);
-			activity = act;
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_connector_by_wifi_idl,
-					container, false);
+		setContentView(R.layout.connector_by_wifi_idl);
 
 			setupNetText = getResources().getText(R.string.setup_net);
 			stopSearchText = getResources().getText(R.string.stop_search);
@@ -91,8 +58,8 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 			onNetText = getResources().getText(R.string.on_net);
 			missNetText = getResources().getText(R.string.miss_net);
 
-			mNetMsg = (TextView) rootView.findViewById(R.id.net_msg);
-			mConnButton = (Button) rootView.findViewById(R.id.button_conn);
+			mNetMsg = (TextView) findViewById(R.id.net_msg);
+			mConnButton = (Button) findViewById(R.id.button_conn);
 			mConnButton.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					if (mNet == null) {
@@ -103,20 +70,20 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 					}
 				}
 			});
-			mDoneButton = (Button) rootView.findViewById(R.id.button_done);
+			mDoneButton = (Button) findViewById(R.id.button_done);
 			mDoneButton.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					//shutdown router by calling stopService
 					Intent intent = new Intent(Router.ACTION_ROUTER_SHUTDOWN);
-					activity.stopService(intent);
+					stopService(intent);
 					//
-					activity.finish();
+					finish();
 				}
 			});
 			
 			// Initialize the array adapter for peer list
-			mPeerListAdapter = new ArrayAdapter<String>(activity, R.layout.peer_name);
-			mPeerListView = (ListView) rootView.findViewById(R.id.peers_list);
+			mPeerListAdapter = new ArrayAdapter<String>(this, R.layout.peer_name);
+			mPeerListView = (ListView) findViewById(R.id.peers_list);
 			mPeerListView.setAdapter(mPeerListAdapter);
 
 			//start router service by intent
@@ -124,11 +91,11 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 			//even when client unbind
 			//must be stopped by calling stopService after all clients unbind
 			Intent intent = new Intent(Router.ACTION_CONNECTION_SERVICE);
-			activity.startService(intent);
+			startService(intent);
 
 			// bind to router connection service, listening to incoming
 			// connections
-			connClient = new RouterConnectionClient(activity, connHandler);
+			connClient = new RouterConnectionClient(this, connHandler);
 			connClient.bindService();
 
 			// setup my device name known to peers
@@ -147,7 +114,6 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 			// start by checking if device is connected to any networks
 			connClient.getNetworks();
 
-			return rootView;
 		}
 
 		@Override
@@ -167,7 +133,7 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 
 		private void configWifi() {
 			Intent in = new Intent(Settings.ACTION_WIFI_SETTINGS);
-			activity.startActivity(in);
+			startActivity(in);
 		}
 
 		private void updateGuiNoNet() {
@@ -482,7 +448,6 @@ public class ConnectorByWifiIdl extends ActionBarActivity {
 				}
 			}
 		};
-
-	}
-
 }
+
+

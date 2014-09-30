@@ -13,9 +13,8 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-
+        android:label="@string/app_name" >
+        
         <!-- the following is manifest for Connector app -->
         
         <activity

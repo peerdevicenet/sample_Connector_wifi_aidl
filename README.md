@@ -1,22 +1,19 @@
 Connector_wifi_aidl
 ===================
 
-This sample connector using Router's ConnectionService aidl api to discover and connect to peer devices. It communicates thru external wifi router or WifiDirect network setup among a group of WifiDirect enabled devices.
+This sample connector using peerdevicenet-router's ConnectionService aidl api to discover and connect to peer devices. It communicates thru either external wifi switch or WifiDirect network setup among a group of WifiDirect enabled devices.
 
-It doesn't embed router directly, instead invokes an external router's APIs embedded in another app such as Connector_wifi_intent. 
+It doesn't embed Router directly, instead invokes an external router's APIs embedded in another app such as Connector_wifi_intent. 
 
 1. In AndroidManifest.xml, add the following permission to enable access router APIs:
 
 		<uses-permission android:name="com.xconns.peerdevicenet.permission.REMOTE_MESSAGING" />
 
-2. Since router's AIDL interface will be used, the following idl files and interface classes are copied from router to here (package com.xconns.peerdevicenet):
 
-		* DeviceInfo.java/DeviceInfo.aidl: info about devices
-		* NetInfo.java/NetInfo.aidl: info about networks
-		* Router.java: PeerDeviceNet specific intent actions, message types, extra data keys.
-		* IRouterConnectionService.aidl: async calls to detect networks, search for peers and connect to peers.
-		* IRouterConnectionHandler.aidl: callback interface for ConnectionService api calls.
-		* RouterConnectionClient.java: a wrapper class for accessing ConnectionService API.
+2. To access router's api, add peerdevicenet-api.jar in one of two ways:
+             
+        * download peerdevicenet-api.jar from MavenCentral(http://search.maven.org/#search|ga|1|peerdevicenet) and copy to project's "libs/" directory.
+        * if you are using android's new gradle build system, you can import it as 'com.xconns.peerdevicenet:peerdevicenet-api:1.1.4'.
 
 
 3. This connector has a single activity ConnectorByWifiIdl with a simple GUI:
@@ -32,7 +29,6 @@ It doesn't embed router directly, instead invokes an external router's APIs embe
 		* connClient: the wrapper object to talk to ConnectionService aidl api.
 		* connHandler: callback handler registered in connClient constructor.
 		* mHandler: an os.Handler object; since connHandler methods run inside aidl threadpool and we can only update GUI inside main thread, so connHandler methods will forward messages to mHandler to perform real job.
-
 
 5. These components are created and destroyed following normal life cycle conventions:
 

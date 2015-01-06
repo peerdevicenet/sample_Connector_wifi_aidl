@@ -76,7 +76,7 @@ public class ConnectorByWifiIdl extends Activity {
 		mDoneButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				// shutdown router by calling stopService
-				Intent intent = new Intent(Router.ACTION_ROUTER_SHUTDOWN);
+				Intent intent = new Intent(Router.Intent.ACTION_ROUTER_SHUTDOWN);
 				stopService(intent);
 				//
 				finish();
@@ -92,7 +92,7 @@ public class ConnectorByWifiIdl extends Activity {
 		// so it can keep running at background
 		// even when client unbind
 		// must be stopped by calling stopService after all clients unbind
-		Intent intent = new Intent(Router.ACTION_CONNECTION_SERVICE);
+		Intent intent = new Intent(Router.Intent.ACTION_CONNECTION_SERVICE);
 		startService(intent);
 
 		// bind to router connection service, listening to incoming

@@ -1,25 +1,12 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
-    }
-}
-
 apply plugin: 'android'
 
 repositories {
+    mavenLocal()
     mavenCentral()
-    /*
-    maven {
-       url "https://oss.sonatype.org/content/repositories/releases/"
-    }
-    */
 }
 
 dependencies {
-    compile 'com.xconns.peerdevicenet:peerdevicenet-api:1.1.4'
+    compile 'com.xconns.peerdevicenet:peerdevicenet-api:1.1.6'
 }
 
 android {

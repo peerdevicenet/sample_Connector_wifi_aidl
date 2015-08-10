@@ -3,7 +3,7 @@ Connector_wifi_aidl
 
 This sample connector using peerdevicenet-router's ConnectionService aidl api to discover and connect to peer devices. It communicates thru either external wifi switch or WifiDirect network setup among a group of WifiDirect enabled devices.
 
-It doesn't embed Router directly, instead invokes an external router's APIs embedded in another app such as Connector_wifi_intent. 
+It doesn't embed Router directly, instead invokes an external router's APIs embedded in another app such as ConnectionSettings app. 
 
 1. In AndroidManifest.xml, add the following permission to enable access router APIs:
 

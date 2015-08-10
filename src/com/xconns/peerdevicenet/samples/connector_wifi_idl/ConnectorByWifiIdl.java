@@ -26,6 +26,7 @@ public class ConnectorByWifiIdl extends Activity {
 
 	private TextView mNetMsg = null;
 	private Button mConnButton = null;
+	private Button mSettingsButton = null;
 	private Button mDoneButton = null;
 
 	private CharSequence setupNetText = null;
@@ -70,6 +71,13 @@ public class ConnectorByWifiIdl extends Activity {
 					Log.d(TAG, "start peer search");
 					connClient.startPeerSearch(null, searchTimeout);
 				}
+			}
+		});
+		mSettingsButton = (Button) findViewById(R.id.button_settings);
+		mSettingsButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent("com.xconns.peerdevicenet.CONNECTION_SETTINGS");
+				startActivity(intent);
 			}
 		});
 		mDoneButton = (Button) findViewById(R.id.button_done);
@@ -300,7 +308,7 @@ public class ConnectorByWifiIdl extends Activity {
 			case Router.MsgId.SEARCH_FOUND_DEVICE:
 				params = (Object[]) msg.obj;
 				device = (DeviceInfo) params[0];
-				boolean uSSL = (Boolean) params[1];
+				//boolean uSSL = (Boolean) params[1];
 				Log.d(TAG, "onSearchFoundDevice: " + device);
 
 				// after find devices

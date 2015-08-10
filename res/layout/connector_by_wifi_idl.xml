@@ -22,11 +22,23 @@
             android:layout_weight="1"
             android:text="@string/miss_net" />
 
-        <Button
-            android:id="@+id/button_conn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setup_net" />
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/button_conn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_net" />
+
+            <Button
+                android:id="@+id/button_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings" />
+        </LinearLayout>
     </LinearLayout>
 
     <View

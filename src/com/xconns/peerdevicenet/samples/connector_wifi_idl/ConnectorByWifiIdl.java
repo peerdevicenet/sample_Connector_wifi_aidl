@@ -3,6 +3,7 @@ package com.xconns.peerdevicenet.samples.connector_wifi_idl;
 import java.util.HashSet;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,6 +26,9 @@ import com.xconns.peerdevicenet.RouterConnectionClient;
 public class ConnectorByWifiIdl extends Activity {
 	private static final String TAG = "ConnectorWifiAidl";
 
+	private EditText ssidText = null;
+	private EditText encryptText = null;
+	private EditText passwdText = null;
 	private TextView mNetMsg = null;
 	private Button mConnButton = null;
 	private Button mSettingsButton = null;
@@ -61,6 +66,13 @@ public class ConnectorByWifiIdl extends Activity {
 		onNetText = getResources().getText(R.string.on_net);
 		missNetText = getResources().getText(R.string.miss_net);
 
+		ssidText = (EditText) findViewById(R.id.ssid_txt);
+		ssidText.setHint("ssid");
+		encryptText = (EditText) findViewById(R.id.encrypt_txt);
+		encryptText.setHint("encrypt");
+		passwdText = (EditText) findViewById(R.id.passwd_txt);
+		passwdText.setHint("password");
+		
 		mNetMsg = (TextView) findViewById(R.id.net_msg);
 		mConnButton = (Button) findViewById(R.id.button_conn);
 		mConnButton.setOnClickListener(new OnClickListener() {
@@ -77,7 +89,12 @@ public class ConnectorByWifiIdl extends Activity {
 		mSettingsButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				Intent intent = new Intent("com.xconns.peerdevicenet.CONNECTION_SETTINGS");
-				startActivity(intent);
+				try {
+					startActivity(intent);
+				}
+				catch(ActivityNotFoundException anf) {
+					
+				}
 			}
 		});
 		mDoneButton = (Button) findViewById(R.id.button_done);
@@ -141,8 +158,30 @@ public class ConnectorByWifiIdl extends Activity {
 	}
 
 	private void configWifi() {
-		Intent in = new Intent(Settings.ACTION_WIFI_SETTINGS);
-		startActivity(in);
+		String ssid = ssidText.getText().toString();
+		String encrypt = encryptText.getText().toString();
+		String passwd = passwdText.getText().toString();
+		
+		if (ssid != null && ssid.length() > 0) {
+			//use entered ssid/encrypt/passwd to connect wifi net
+			NetInfo net = new NetInfo();
+			net.type = NetInfo.WiFi;
+			net.name = ssid;
+			net.pass = passwd;
+			net.encrypt = NetInfo.NoPass;
+			if (encrypt.toUpperCase().startsWith("WPA")) {
+				net.encrypt = NetInfo.WPA;
+			} else if(encrypt.equalsIgnoreCase("WEP")) {
+				net.encrypt = NetInfo.WEP;
+			}
+			connClient.connectNetwork(net);
+			mNetMsg.setText("connecting to "+ssid+" ...");
+		} else {
+			//bring up system default GUI to select and connect
+			//to wifi net
+			Intent in = new Intent(Settings.ACTION_WIFI_SETTINGS);
+			startActivity(in);
+		}
 	}
 
 	private void updateGuiNoNet() {
@@ -290,6 +329,18 @@ public class ConnectorByWifiIdl extends Activity {
 		public void onGetConnectionInfo(String devName, boolean uSSL,
 				int liveTime, int connTime, int searchTime) {
 			// do nothing
+		}
+
+		@Override
+		public void onNetworkConnecting(NetInfo net) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onNetworkConnectionFailed(NetInfo net) {
+			// TODO Auto-generated method stub
+			
 		}
 
 	};

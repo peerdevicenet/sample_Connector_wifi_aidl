@@ -7,8 +7,8 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'com.xconns.peerdevicenet:peerdevicenet-api:1.1.7'
-    //compile project(':Router')
+    //compile 'com.xconns.peerdevicenet:peerdevicenet-api:1.1.7'
+    compile project(':Router')
 }
 
 android {

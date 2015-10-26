@@ -1,8 +1,6 @@
 Connector_wifi_aidl
 ===================
 
-        --- move to http://github.com/xconns-com ---
-
 This sample connector using peerdevicenet-router's ConnectionService aidl api to discover and connect to peer devices. It communicates thru either external wifi switch or WifiDirect network setup among a group of WifiDirect enabled devices.
 
 It doesn't embed Router directly, instead invokes an external router's APIs embedded in another app such as ConnectionSettings app. 
@@ -15,7 +13,7 @@ It doesn't embed Router directly, instead invokes an external router's APIs embe
 2. To access router's api, add peerdevicenet-api.jar in one of two ways:
              
         * download peerdevicenet-api.jar from MavenCentral(http://search.maven.org/#search|ga|1|peerdevicenet) and copy to project's "libs/" directory.
-        * if you are using android's new gradle build system, you can import it as 'com.xconns.peerdevicenet:peerdevicenet-api:1.1.7'.
+        * if you are using android's new gradle build system, you can import it as 'com.xconns.peerdevicenet:peerdevicenet-api:1.1.8'.
 
 
 3. This connector has a single activity ConnectorByWifiIdl with a simple GUI:

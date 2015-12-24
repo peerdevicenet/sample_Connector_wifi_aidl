@@ -1,6 +1,8 @@
 Connector_wifi_aidl
 ===================
 
+*** moved to github.com/xconns-com/PeerDeviceNet ***
+
 This sample connector using peerdevicenet-router's ConnectionService aidl api to discover and connect to peer devices. It communicates thru either external wifi switch or WifiDirect network setup among a group of WifiDirect enabled devices.
 
 It doesn't embed Router directly, instead invokes an external router's APIs embedded in another app such as ConnectionSettings app. 
